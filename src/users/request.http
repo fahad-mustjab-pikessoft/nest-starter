@@ -1,0 +1,79 @@
+### create the user
+POST http://localhost:3000/auth/create
+content-type: application/json
+
+{
+    "email":"test@gmail.com", 
+    "password": "abc123456"
+}
+
+
+
+###signup the user
+POST http://localhost:3000/auth/signup
+content-type: application/json
+
+{
+    "email":"beingfahad7861", 
+    "password":"123456"
+}
+
+
+
+###Update the user
+PATCH http://localhost:3000/auth/1
+content-type: application/json
+
+{
+    "email": "randomEm1ail1@gmail.com",
+
+}
+
+
+###sign in the user;
+POST http://localhost:3000/auth/signin
+content-type:application/json
+
+{
+    "email":"beingfahad7861@gmail.com", 
+    "password":"123456"
+}
+
+
+
+#### find a  user with given email
+GET http://localhost:3000/auth?email=test1@gmail.com
+
+
+
+###find user with given id
+GET http://localhost:3000/auth/2
+
+###Delete the user with given id
+DELETE http://localhost:3000/auth/2
+
+
+###Delete the user with the given email
+DELETE  http://localhost:3000/auth?email=beingfahad786@gmail.com
+
+
+
+###get the current user
+GET http://localhost:3000/auth/whoami
+
+
+###signout
+POST http://localhost:3000/auth/signout
+
+
+###Get profile
+GET http://localhost:3000/auth/profile
+
+###login
+POST http://localhost:3000/auth/login 
+contenty-type: application/json
+
+{
+    "email":"test@gmail.com", 
+    "password": "abc123456"
+}
