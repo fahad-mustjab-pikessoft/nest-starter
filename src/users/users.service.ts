@@ -4,7 +4,7 @@ import { Users } from './users.entity';
 import { Repository } from 'typeorm';
 import {  randomBytes } from 'crypto';
 
-var pbkdf2 = require('pbkdf2');
+const pbkdf2 = require('pbkdf2');
 
 @Injectable()
 export class UsersService {
@@ -21,12 +21,12 @@ export class UsersService {
 
     async update(id: number, attrs: Partial<Users>){
         const user = await this.findOne(id);
+        console.log(user);
         if(!user){
             throw new NotFoundException('User not found');
         }
         
         Object.assign(user,attrs);
-        // console.log(user);
         return this.repo.save(user);
     }
 

@@ -8,10 +8,13 @@ import { Request } from '@nestjs/common';
 import { LocalAuthGuard } from 'src/guards/local-auth-guard';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { Public } from 'src/decorators/public.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Auth')
-@Controller('auth')
+@Public()
+
+@Controller('user')
 
 // @Serialize(UserDto)
 export class UsersController {
@@ -19,19 +22,7 @@ export class UsersController {
 
     }
 
-    @UseGuards(JwtAuthGuard)
-    @Get('profile')
-    getProfile(@Request() req: any) {
-    // console.log("random");
-    return req.user;
-    }
-    // @UseGuards(AuthGuard)
-    @Get('whoami') 
-    whoAmI(@CurrentUser() user: any){
-        return user;
-    }
-
-    //Endpoint for testing purposes only
+    
     @Post('/create')
      createUser(@Body() body: CreateUserDto ){
         console.log("creating user here  || ");
@@ -52,6 +43,7 @@ export class UsersController {
         return this.userService.findOne(parseInt(id));
     }
 
+    @Public()
     @Get()
     findAll(@Query('email') email:string){
         return this.userService.find(email);
@@ -71,30 +63,19 @@ export class UsersController {
 
 
 
-
-    @Post('signup')
-    async creatUser(@Body() body: CreateUserDto,@Session() session: any){
-        const user =  await this.authService.signup(body.email,body.password);
-        session.userId = user.id;
-        return user;
-
-    }
-
-    @UseGuards(LocalAuthGuard)
-    @Post('login')
-    async login(@Request() request: any,@Body() body: CreateUserDto){
-        // console.log(request.user);
-
-        return this.authService.generateToken(request.user);
-    }
+   
 
 
-    @Post('signin')
-    async signIn(@Body() body: CreateUserDto,@Session() session: any){
-        const res = await this.authService.signin(body.email,body.password);
-        // session.userId = res.userId;
-        return res.access_token;
-    }
+    // @Post('signin')
+    // async signIn(@Body() body: CreateUserDto,@Session() session: any){
+    //     const res = await this.authService.signin(body.email,body.password);
+    //     // session.userId = res.userId;
+    //     return res.access_token;
+    // }
+
+
+
+  
 
 
     // @Post('signout')

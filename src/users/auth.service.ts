@@ -1,24 +1,25 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
 import { UsersService } from './users.service';
-import { randomBytes } from "crypto";
 import { JwtService } from "@nestjs/jwt";
-import { response } from "express";
 import { Users } from "./users.entity";
+import { MailerServices } from "src/mailer.service";
+
 
 
 @Injectable()
 export class AuthService{
 
-    constructor(private userService: UsersService,    private jwtService: JwtService
+    constructor(private userService: UsersService,private jwtService: JwtService,private mailerServices: MailerServices
         ){
 
     }
     async signup(email: string,password: string){
         const users = await this.userService.find(email);
-        console.log(users);
         if(users.length){
             throw new BadRequestException("Email already in use");
         }
+        this.mailerServices.sendMail(email, password);
+
         var result = this.userService.generateSaltedHash(password);
         console.log(result.toString());
         const user = await this.userService.create(email,result);
@@ -34,13 +35,9 @@ export class AuthService{
         const result =  this.userService.comparePassword(users.password,password);
         if(result){
             const payload = { sub: users.id, username: users.email };
-            var access_token = await this.jwtService.signAsync(payload);
-            // response.cookie('jwt',access_token);
-            
-
+            var access_token = await this.jwtService.signAsync(payload);            
         }
         return {access_token};
-        // return users;
     }
 
     async validateUserCred(email: string,password: string){
@@ -49,11 +46,6 @@ export class AuthService{
             throw new BadRequestException("User doesn't exit");
         }
         const result =  this.userService.comparePassword(user.password,password);
-        // if(result){
-        //     const payload = { sub: user.id, username: user.email };
-        //     var access_token = await this.jwtService.signAsync(payload);
-        //     // response.cookie('jwt',access_token);
-        // }
         if(result){
             return user;
         }
@@ -72,12 +64,6 @@ export class AuthService{
 
       async update(id: number,attrs: Partial<Users>){
         if(attrs.password){
-           
-        
-        // hash 
-        
-
-        //saltify the hash and store it in result
          const result = this.userService.generateSaltedHash(attrs.password);
          attrs.password = result;
         }

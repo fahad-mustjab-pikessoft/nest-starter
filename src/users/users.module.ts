@@ -4,18 +4,19 @@ import { UsersService } from './users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Users } from './users.entity';
 import { AuthService } from './auth.service';
-import { JwtModule } from '@nestjs/jwt';
-import { CurrentUserInterceptor } from 'src/interceptors/current-user.interceptor';
-import { APP_INTERCEPTOR } from '@nestjs/core';
 import { LocalStrategy } from 'src/strategy/local.strategy';
 import { PassportModule } from '@nestjs/passport';
+import { MailerServices } from 'src/mailer.service';
+import { Likes } from 'src/feed/like/likes.entity';
+import { AuthController } from './auth.controller';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Users]),
+  imports: [TypeOrmModule.forFeature([Users,Likes]),
   PassportModule
 
 ],
-  controllers: [UsersController],
-  providers: [UsersService,AuthService,LocalStrategy]
+  controllers: [UsersController,AuthController],
+  providers: [UsersService,AuthService,LocalStrategy,MailerServices],
+  exports: [UsersService]
 })
 export class UsersModule {}

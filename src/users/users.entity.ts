@@ -1,4 +1,7 @@
-import { AfterInsert, AfterRemove, AfterUpdate, Column, Entity, UpdateDateColumn,PrimaryGeneratedColumn,CreateDateColumn } from "typeorm";
+import { AfterInsert, AfterRemove, AfterUpdate, Column, Entity, UpdateDateColumn,PrimaryGeneratedColumn,CreateDateColumn, OneToMany, BeforeUpdate, OneToOne, JoinColumn } from "typeorm";
+import { Settings } from "src/feed/settings/settings.entity";
+import { Likes } from "src/feed/like/likes.entity";
+import { Posts } from "src/feed/post/post.entity";
 
 @Entity()
 export class Users{
@@ -17,6 +20,23 @@ export class Users{
     updatedAt: Date ;
 
 
+    @OneToMany(() => Posts,(post) => post.user)
+    posts: Posts[];
+
+
+    @OneToMany(() => Likes,(post) => post.user)
+    likes: Likes[];
+
+    @OneToOne(() => Settings, settings => settings.user, { eager: true, cascade: true })
+    @JoinColumn()
+    settings: Settings;
+
+
+
+    @BeforeUpdate()
+    updateTimestamp() {
+    this.updatedAt = new Date();
+    }
 
     @AfterInsert()
     logInsert(){
